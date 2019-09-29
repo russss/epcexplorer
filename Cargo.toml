@@ -1,7 +1,9 @@
 [package]
 name = "epcexplorer"
+description = "A tool to explore UHF RFID tags"
 version = "0.1.0"
 license = "GPL-3.0"
+readme = "README.md"
 repository = "https://github.com/russss/epcexplorer"
 authors = ["Russ Garrett <russ@garrett.co.uk>"]
 edition = "2018"
