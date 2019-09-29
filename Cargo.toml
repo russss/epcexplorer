@@ -1,0 +1,17 @@
+[package]
+name = "epcexplorer"
+version = "0.1.0"
+authors = ["Russ Garrett <russ@garrett.co.uk>"]
+edition = "2018"
+
+[dependencies]
+ru5102 = {path = "../ru5102"}
+gs1 = {path = "../gs1"}
+tui = "0.6.2"
+termion = "1.5"
+failure = "0.1.5"
+hex = "0.3.1"
+
+[[bin]]
+name = "epcexplorer"
+path = "main.rs"
