@@ -4,7 +4,7 @@ use tui::layout::Rect;
 use tui::buffer::Buffer;
 use tui::widgets::{Widget, Table, Row};
 use tui::style::{Color, Style, Modifier};
-use gs1::{epc, epc::tid::mdid_name};
+use gs1::{epc, epc::tid::mdid_name, epc::tid::tmid_name};
 
 fn render_row(item: &ScanResult) -> Vec<String> {
     let mut epc_str = match epc::decode_binary(&item.epc) {
@@ -23,7 +23,10 @@ fn render_row(item: &ScanResult) -> Vec<String> {
             None => "".to_string()
         },
         match item.tid {
-            Some(tid) => format!("{}", tid.tmid),
+            Some(tid) => match tmid_name(&tid.mdid, &tid.tmid) {
+                "Unknown" => format!("0x{:X}", &tid.tmid),
+                found => found.to_string()
+            },
             None => "".to_string()
         },
         match item.xtid_header {
@@ -78,7 +81,7 @@ impl<'a> Widget for TagTable<'a> {
         Table::new(header.into_iter(), rows)
             .header_style(Style::default().modifier(Modifier::BOLD))
             .block(block("Tags"))
-            .widths(&[50, 30, 6, 6, 6, 9])
+            .widths(&[50, 25, 10, 6, 6, 9])
             .draw(area, buf);
     }
 }
