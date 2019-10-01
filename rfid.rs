@@ -73,18 +73,9 @@ fn read_tag(reader: &mut ru5102::Reader, uid: &Vec<u8>) -> ScanResult {
         None => None,
     };
 
-    let serial = match xtid {
-        Some(xtid) => {
-            if xtid.serial_size > 0 {
-                match read_tid(reader, &uid, 4, (xtid.serial_size / 16) as u8) {
+    let serial = match read_tid(reader, &uid, 2, 3) {
                     Ok(data) => Some(data),
                     Err(_) => None,
-                }
-            } else {
-                None
-            }
-        }
-        None => None,
     };
 
     ScanResult {

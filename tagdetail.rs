@@ -32,12 +32,16 @@ fn render_detail(item: &ScanResult) -> Vec<Text> {
         Text::styled(header, Style::default().modifier(Modifier::BOLD)),
         Text::raw(match item.tid {
             Some(tid) => format!("{:?}\n", tid),
-            None => "\n".to_string()
+            None => "".to_string()
         }),
         Text::raw(match item.xtid_header {
             Some(xtid) => format!("{:?}\n", xtid),
-            None => "\n".to_string()
+            None => "".to_string()
         }),
+        Text::raw(match &item.serial {
+            Some(serial) => format!("Serial: {}", hex::encode(serial)),
+            None => "".to_string()
+        })
     ]
 }
 
