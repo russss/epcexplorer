@@ -37,6 +37,14 @@ fn render_row(item: &ScanResult) -> Vec<String> {
             Some(_) => "Y",
             None => ""
         }.to_string(),
+        match item.rssi {
+            Some(val) => format!("{}", val),
+            None => "".to_string()
+        },
+        match item.antenna {
+            Some(val) => format!("{}", val),
+            None => "".to_string()
+        },
         format!("{}s", item.last_seen.elapsed().as_secs())
     ]
 }
@@ -58,7 +66,7 @@ impl<'a> TagTable<'a> {
 
 impl<'a> Widget for TagTable<'a> {
     fn draw(&mut self, area: Rect, buf: &mut Buffer) {
-        let header = ["ID", "Manufacturer", "Model", "XTID", "Serial", "Age"];
+        let header = ["ID", "Manufacturer", "Model", "XTID", "Serial", "RSSI", "Ant", "Age"];
         let selected_style = Style::default().fg(Color::Yellow);
         let normal_style = Style::default();
         let rows = self.items.iter().map(|item| {
@@ -81,7 +89,7 @@ impl<'a> Widget for TagTable<'a> {
         Table::new(header.into_iter(), rows)
             .header_style(Style::default().modifier(Modifier::BOLD))
             .block(block("Tags"))
-            .widths(&[50, 25, 10, 6, 6, 9])
+            .widths(&[50, 25, 10, 6, 6, 8, 6, 9])
             .draw(area, buf);
     }
 }

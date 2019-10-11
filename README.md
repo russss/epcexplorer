@@ -6,7 +6,8 @@ A tool to explore UHF RFID tags, written in Rust. Electronic Product Code (EPC) 
 
 ## Supported Readers
 
-Currently only the CH-RU5102 reader is supported.
+* CH-RU5102 (`ru5102` driver)
+* Invelion and similar (`invelion` driver)
 
 ## Installing
 
@@ -16,6 +17,6 @@ Assuming you have the Rust toolchain installed, you can install with :
 
 ## Running
 
-Pass the serial device name to the binary - in my case:
+Pass the serial device name and driver name to the binary - in my case:
 
-	$ epcexplorer /dev/cu.SLAB_USBtoUART
+	$ epcexplorer /dev/cu.SLAB_USBtoUART ru5102

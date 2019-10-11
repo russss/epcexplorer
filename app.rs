@@ -1,12 +1,21 @@
-use std::collections::HashMap;
 use crate::rfid::ScanResult;
-use std::sync::mpsc;
 use std::cmp;
+use std::collections::HashMap;
+use std::sync::mpsc;
 use std::time;
+
+const INACTIVE_AGE: time::Duration = time::Duration::from_secs(5);
 
 pub(crate) struct App {
     pub items: HashMap<Vec<u8>, ScanResult>,
     pub selected: Option<Vec<u8>>,
+    pub show_inactive: bool,
+}
+
+impl ScanResult {
+    fn active(&self) -> bool {
+        self.last_seen.elapsed() < INACTIVE_AGE
+    }
 }
 
 impl App {
@@ -14,6 +23,7 @@ impl App {
         App {
             items: HashMap::new(),
             selected: None,
+            show_inactive: false,
         }
     }
 
@@ -30,8 +40,10 @@ impl App {
                             self.items.insert(epc, result);
                         }
                     };
-                },
-                Err(_) => {break;}
+                }
+                Err(_) => {
+                    break;
+                }
             };
         }
         let items = self.get_items();
@@ -39,7 +51,7 @@ impl App {
             match self.selected {
                 None => {
                     self.selected = Some(items[0].epc.to_vec());
-                },
+                }
                 _ => {}
             }
         } else {
@@ -69,7 +81,7 @@ impl App {
         if selected_index == 0 && reverse {
             selected_index = items.len() - 1;
         } else if selected_index == items.len() - 1 && !reverse {
-            selected_index  = 0;
+            selected_index = 0;
         } else if reverse {
             selected_index -= 1;
         } else {
@@ -80,9 +92,20 @@ impl App {
     }
 
     pub fn get_items(&self) -> Vec<&ScanResult> {
-        let mut items: Vec<&ScanResult> = self.items.iter().map(|(_, res)| res).collect();
-        items.sort_by_key(|res| (cmp::max(res.last_seen.elapsed(), time::Duration::from_secs(1)), res.epc.to_owned()));
+        let mut items: Vec<&ScanResult> = self.items.iter().filter_map(
+            |(_, item)| 
+            if !item.active() && !self.show_inactive {
+                None
+            } else {
+                Some(item)
+            }
+        ).collect();
+        items.sort_by_key(|res| {
+            (
+                cmp::max(res.last_seen.elapsed(), INACTIVE_AGE),
+                res.epc.to_owned(),
+            )
+        });
         items
     }
 }
-
