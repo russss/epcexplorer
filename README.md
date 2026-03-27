@@ -1,3 +1,6 @@
+> [!IMPORTANT]
+> This repository has been migrated to Codeberg: [https://codeberg.org/russss/epcexplorer](https://codeberg.org/russss/epcexplorer)
+
 # EPC Explorer
 
 A tool to explore UHF RFID tags, written in Rust. Electronic Product Code (EPC) fields are decoded using the [GS1](https://crates.io/crates/gs1) crate.
